@@ -52,20 +52,20 @@ module JSON
             message = "The property '#{build_fragment(fragments)}' matched one or more of the following types:"
             types.each {|type| message += type.is_a?(String) ? " #{type}," : " (schema)," }
             message.chop!
-            validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+            validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :type })
           end
         elsif !valid
           if union
             message = "The property '#{build_fragment(fragments)}' of type #{type_of_data(data)} did not match one or more of the following types:"
             types.each {|type| message += type.is_a?(String) ? " #{type}," : " (schema)," }
             message.chop!
-            validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+            validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :type })
             validation_errors(processor).last.sub_errors = union_errors
           else
             message = "The property '#{build_fragment(fragments)}' of type #{type_of_data(data)} did not match the following type:"
             types.each {|type| message += type.is_a?(String) ? " #{type}," : " (schema)," }
             message.chop!
-            validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+            validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :type })
           end
         end
       end

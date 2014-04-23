@@ -16,19 +16,19 @@ module JSON
               begin
                 Date.parse(parts[0])
               rescue Exception
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
                 return
               end
               begin
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[1].to_i > 23
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[2].to_i > 59
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[3].to_i > 59
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[1].to_i > 23
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[2].to_i > 59
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[3].to_i > 59
               rescue Exception
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
                 return
               end
             else
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
               return
             end
           end
@@ -41,11 +41,11 @@ module JSON
               begin
                 Date.parse(data)
               rescue Exception
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
                 return
               end
             else
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
               return
             end
           end
@@ -56,11 +56,11 @@ module JSON
             error_message = "The property '#{build_fragment(fragments)}' must be a time in the format of hh:mm:ss"
             r = Regexp.new('^(\d\d):(\d\d):(\d\d)$')
             if (m = r.match(data))
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[1].to_i > 23
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[2].to_i > 59
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[3].to_i > 59
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[1].to_i > 23
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[2].to_i > 59
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[3].to_i > 59
             else
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
               return
             end
           end
@@ -72,10 +72,10 @@ module JSON
             r = Regexp.new('^(\d+){1,3}\.(\d+){1,3}\.(\d+){1,3}\.(\d+){1,3}$')
             if (m = r.match(data))
               1.upto(4) do |x|
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if m[x].to_i > 255
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if m[x].to_i > 255
               end
             else
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
               return
             end
           end
@@ -88,17 +88,17 @@ module JSON
             if (m = r.match(data))
               # All characters are valid, now validate structure
               parts = data.split(":")
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if parts.length > 8
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if parts.length > 8
               condensed_zeros = false
               parts.each do |part|
                 if part.length == 0
-                  validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if condensed_zeros
+                  validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if condensed_zeros
                   condensed_zeros = true
                 end
-                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if part.length > 4
+                validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format }) and return if part.length > 4
               end
             else
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
               return
             end
           end
@@ -109,7 +109,7 @@ module JSON
             begin
               URI.parse(data)
             rescue URI::InvalidURIError
-              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :format })
             end
           end
 

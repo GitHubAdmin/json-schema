@@ -7,7 +7,7 @@ module JSON
              current_schema.schema['multipleOf'] == 0.0 ||
              (BigDecimal.new(data.to_s) % BigDecimal.new(current_schema.schema['multipleOf'].to_s)).to_f != 0
              message = "The property '#{build_fragment(fragments)}' was not divisible by #{current_schema.schema['multipleOf']}"
-             validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+             validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :multiple_of })
           end
         end
       end

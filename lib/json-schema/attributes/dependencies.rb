@@ -8,13 +8,13 @@ module JSON
               if dependency_value.is_a?(String)
                 if !data.has_key?(dependency_value.to_s) && !data.has_key?(dependency_value.to_sym)
                   message = "The property '#{build_fragment(fragments)}' has a property '#{property}' that depends on a missing property '#{dependency_value}'"
-                  validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+                  validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :dependencies })
                 end
               elsif dependency_value.is_a?(Array)
                 dependency_value.each do |value|
                   if !data.has_key?(value.to_s) && !data.has_key?(value.to_sym)
                     message = "The property '#{build_fragment(fragments)}' has a property '#{property}' that depends on a missing property '#{value}'"
-                    validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+                    validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :dependencies })
                   end
                 end
               else

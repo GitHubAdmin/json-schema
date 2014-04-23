@@ -8,7 +8,7 @@ module JSON
               dependency_value.each do |value|
                 if !data.has_key?(value.to_s) && !data.has_key?(value.to_sym)
                   message = "The property '#{build_fragment(fragments)}' has a property '#{property}' that depends on a missing property '#{value}'"
-                  validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+                  validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :dependencies })
                 end
               end
             end

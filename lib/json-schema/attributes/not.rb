@@ -20,7 +20,7 @@ module JSON
         end
 
         unless failed
-          validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+          validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :not })
         end
       end
     end

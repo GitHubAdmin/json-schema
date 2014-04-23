@@ -11,13 +11,14 @@ module JSON
 
   class Schema
     class ValidationError < StandardError
-      attr_accessor :fragments, :schema, :failed_attribute, :sub_errors
+      attr_accessor :fragments, :schema, :failed_attribute, :sub_errors, :error_details
 
-      def initialize(message, fragments, failed_attribute, schema)
+      def initialize(message, fragments, failed_attribute, schema, error_details={})
         @fragments = fragments.clone
         @schema = schema
         @sub_errors = []
         @failed_attribute = failed_attribute
+        @error_details = error_details
         message = "#{message} in schema #{schema.uri}"
         super(message)
       end
@@ -33,7 +34,7 @@ module JSON
       end
 
       def to_hash
-        base = {:schema => @schema.uri, :fragment => ::JSON::Schema::Attribute.build_fragment(fragments), :message => message, :failed_attribute => @failed_attribute.to_s.split(":").last.split("Attribute").first}
+        base = {:schema => @schema.uri, :fragment => ::JSON::Schema::Attribute.build_fragment(fragments), :message => message, :failed_attribute => @failed_attribute.to_s.split(":").last.split("Attribute").first, :error_details => @error_details}
         if !@sub_errors.empty?
           base[:errors] = @sub_errors.map{|e| e.to_hash}
         end
@@ -55,8 +56,13 @@ module JSON
         "#/#{fragments.join('/')}"
       end
 
-      def self.validation_error(processor, message, fragments, current_schema, failed_attribute, record_errors)
-        error = ValidationError.new(message, fragments, failed_attribute, current_schema)
+      def self.last_fragment_as_symbol(fragments)
+        return nil if fragments.empty?
+        fragments.first.to_sym
+      end
+
+      def self.validation_error(processor, message, fragments, current_schema, failed_attribute, record_errors, error_details={})
+        error = ValidationError.new(message, fragments, failed_attribute, current_schema, error_details)
         if record_errors
           processor.validation_error(error)
         else

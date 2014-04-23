@@ -2,12 +2,12 @@ require 'yaml'
 
 version_yaml = YAML.load(File.open('VERSION.yml').read)
 version = "#{version_yaml['major']}.#{version_yaml['minor']}.#{version_yaml['patch']}"
-gem_name = "json-schema"
+gem_name = "json-schema-pvdgm"
 
 spec = Gem::Specification.new do |s|
   s.name = gem_name
   s.version = version
-  s.authors = ["Kenny Hoxworth"]
+  s.authors = ["Kenny Hoxworth", "Dave Sieh"]
   s.email = "hoxworth@gmail.com"
   s.homepage = "http://github.com/hoxworth/json-schema/tree/master"
   s.summary = "Ruby JSON Schema Validator"

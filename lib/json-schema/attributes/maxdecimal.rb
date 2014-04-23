@@ -6,7 +6,7 @@ module JSON
           s = data.to_s.split(".")[1]
           if s && s.length > current_schema.schema['maxDecimal']
             message = "The property '#{build_fragment(fragments)}' had more decimal places than the allowed #{current_schema.schema['maxDecimal']}"
-            validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+            validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: last_fragment_as_symbol(fragments), failure: :max_decimal })
           end
         end
       end

@@ -16,7 +16,7 @@ module JSON
 
             if (property_schema['required'] || options[:strict] == true) && !data.has_key?(property.to_s) && !data.has_key?(property.to_sym)
               message = "The property '#{build_fragment(fragments)}' did not contain a required property of '#{property}'"
-              validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
+              validation_error(processor, message, fragments, current_schema, self, options[:record_errors], { property: property.to_sym, failure: :properties })
             end
 
             if data.has_key?(property.to_s) || data.has_key?(property.to_sym)
