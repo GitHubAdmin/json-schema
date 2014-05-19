@@ -34,12 +34,14 @@ module JSON
       # definition; it keeps the schema stuff short and to the point.
       r = OpenStruct.new(data)
 
+      m = model
+
       # Do the static validation first
       errors = JSON::Validator.fully_validate(schema, data, errors_as_objects: true).map { | e | e[:error_details] }.uniq
 
       # Now perform dynamic validation
       schema['properties'].each_pair do | property, sch |
-        errors.concat process_dynamic_validation(property, sch, r)
+        errors.concat process_dynamic_validation(property, sch, r, m)
       end
 
       # Add the errors to the model
@@ -55,23 +57,23 @@ module JSON
       defined?(I18n) ? I18n.t(s) : s
     end
 
-    def process_dynamic_validation(property, sch, r)
+    def process_dynamic_validation(property, sch, r, m)
       errors = []
       DYNAMIC_VALIDATORS.each do | dv |
         dv_value = sch[dv.first.first] || sch[dv.first.last]
-        error = send(dv.last, r, property, dv_value) if dv_value.present?
+        error = send(dv.last, m, r, property, dv_value) if dv_value.present?
         errors << error if error.present?
       end
       errors
     end
 
-    def process_required_if(r, property, required_if_expression)
+    def process_required_if(m, r, property, required_if_expression)
       if eval(required_if_expression)
         { property: property.to_sym, failure: :required } if r[property.to_sym].blank?
       end
     end
 
-    def process_none_of_the_above(r, property, none_of_the_above_value)
+    def process_none_of_the_above(m, r, property, none_of_the_above_value)
       value = r[property.to_sym]
       if value.is_a?(Array)
         { property: property.to_sym, failure: :noneOfTheAbove } if value.include?(none_of_the_above_value) && value.size > 1
